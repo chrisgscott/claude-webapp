@@ -6,6 +6,7 @@ h11==0.14.0
 idna==3.7
 iniconfig==2.0.0
 packaging==24.1
+passlib==1.7.4
 pluggy==1.5.0
 pydantic==2.8.2
 pydantic_core==2.20.1
