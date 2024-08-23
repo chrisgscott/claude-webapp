@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class Token(BaseModel):
     access_token: str
@@ -6,3 +6,5 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)

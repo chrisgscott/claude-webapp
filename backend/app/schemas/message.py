@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class MessageBase(BaseModel):
@@ -6,12 +6,11 @@ class MessageBase(BaseModel):
     role: str  # 'user' or 'assistant'
 
 class MessageCreate(MessageBase):
-    conversation_id: int
+    pass
 
 class Message(MessageBase):
     id: int
     conversation_id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

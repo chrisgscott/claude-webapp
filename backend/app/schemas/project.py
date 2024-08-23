@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import List, Optional
 
@@ -17,15 +17,13 @@ class Project(ProjectBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ProjectWithDetails(Project):
     conversations: List['Conversation'] = []
     knowledge_base: List['KnowledgeBase'] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 from .conversation import Conversation
 from .knowledge_base import KnowledgeBase

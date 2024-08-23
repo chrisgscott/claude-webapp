@@ -9,12 +9,13 @@ class ClaudeAPI:
         self.headers = {
             "Content-Type": "application/json",
             "X-API-Key": self.api_key,
+            "anthropic-version": "2023-06-01"
         }
 
     async def generate_response(self, conversation_history):
-        url = f"{self.base_url}/chat/completions"
+        url = f"{self.base_url}/messages"
         payload = {
-            "model": "claude-2",  # or whichever model you're using
+            "model": "claude-3-5-sonnet-20240620",
             "messages": conversation_history,
             "max_tokens": 1000,  # Adjust as needed
         }
