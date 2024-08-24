@@ -14,6 +14,9 @@ class Settings(BaseSettings):
 
     # Claude API settings
     CLAUDE_API_KEY: str
+    CLAUDE_MODEL: str = "claude-3-5-sonnet-20240620"
+    CLAUDE_API_VERSION: str = "2023-06-01"
+    CLAUDE_MAX_TOKENS: int = 1000
 
     model_config = ConfigDict(env_file=".env")
 

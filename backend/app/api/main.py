@@ -9,6 +9,7 @@ from typing import List
 from datetime import timedelta
 from app.crud import conversation as crud_conversation
 from app.schemas import conversation as schemas_conversation
+from app.utils.logger import api_logger
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -154,13 +155,20 @@ async def create_message(
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(get_current_user)
 ):
-    db_conversation = crud_conversation.get_conversation(db, conversation_id=conversation_id)
-    if db_conversation is None:
-        raise HTTPException(status_code=404, detail="Conversation not found")
-    db_project = crud.get_project(db, project_id=db_conversation.project_id)
-    if db_project.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized to access this conversation")
-    return await crud_conversation.create_message(db=db, message=message, conversation_id=conversation_id)
+    try:
+        db_conversation = crud.conversation.get_conversation(db, conversation_id=conversation_id)
+        if db_conversation is None:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+        db_project = crud.project.get_project(db, project_id=db_conversation.project_id)
+        if db_project.user_id != current_user.id:
+            raise HTTPException(status_code=403, detail="Not authorized to access this conversation")
+        return await crud.conversation.create_message(db=db, message=message, conversation_id=conversation_id)
+    except HTTPException as exc:
+        api_logger.error(f"HTTP error in create_message: {exc.detail}")
+        raise
+    except Exception as exc:
+        api_logger.error(f"Unexpected error in create_message: {str(exc)}")
+        raise HTTPException(status_code=500, detail="An unexpected error occurred")
 
 @app.get("/conversations/{conversation_id}/messages/", response_model=List[schemas_conversation.Message])
 def read_messages(
